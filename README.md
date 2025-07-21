@@ -14,18 +14,19 @@
 </div>
 
 <p align="center">
-    <img src="docs/static/images/framework.png" width="600"/>
+    <img src="docs/assets/image/overview.jpg"/>
 <p>
+
 
 We introduce **Being-H0**, a dexterous Vision-Language-Action model trained on large-scale human videos.
 
 ## News
 
-- **[2025-07-21]**: We publish **Being-H0**! Check our paper [here](./)
+- **[2025-07-21]**: We publish **Being-H0**! Check our paper [here](./).
 
 ## Code & Model
 
-We will release the code and model weights soon. Stay tuned!
+We will release the code and model weights soon!
 
 ## Citation
 If you find our work useful, please consider citing us and give a star to our repository! 🌟🌟🌟
