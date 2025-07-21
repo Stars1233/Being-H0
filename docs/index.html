@@ -10,8 +10,7 @@
     
     
     <!-- Preload critical assets -->
-    <link rel="preload" as="image" href="assets/image/being-h0.png">
-    <link rel="preload" href="assets/image/background.mp4" as="video" type="video/mp4">
+    <link rel="preload" as="image" href="assets/image/being-h0.webp">
     
     <!-- External CSS -->
     <link rel="stylesheet" href="static/css/styles.css">
@@ -24,7 +23,7 @@
     <header class="header" id="header">
         <!-- Background Video -->
         <video class="background-video" autoplay muted loop playsinline preload="metadata" disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback">
-            <source src="assets/image/background.mp4" type="video/mp4">
+            <source src="assets/video/background.webm" type="video/webm">
             <!-- Fallback for browsers that don't support video -->
             <div class="video-fallback"></div>
         </video>
@@ -34,7 +33,7 @@
         
         <div class="header-content">
             <div class="logo">
-                <img src="assets/image/being-h0.png" alt="Project Logo" loading="eager">
+                <img src="assets/image/being-h0.webp" alt="Project Logo" loading="eager">
             </div>
 
             <h1 class="title">Vision-Language-Action Pretraining from Large-Scale Human Videos</h1>
@@ -102,7 +101,7 @@
             <div class="grid-one-column">
                 <div class="grid-item">
                     <div class="item-image">
-                        <img data-src="assets/image/overview.jpg" alt="Key Concept" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
+                        <img data-src="assets/image/overview.webp" alt="Key Concept" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
                     </div>
                     <h3 class="item-title">Key Concept</h3>
                     <p class="item-description"><b><tt>Being-H0</tt></b> acquires dexterous manipulation skills by learning from large-scale human videos in the <b>UniHand</b> dataset via <b>physical instruction tuning</b>. By explicitly modeling hand motions, the resulting foundation model seamlessly transfers from human hand demonstrations to robotic manipulation.</p>
@@ -235,7 +234,7 @@
             <div class="grid-one-column">
                 <div class="grid-item">
                     <div class="item-image">
-                        <img data-src="assets/image/01_arch.png" alt="Overview of Being-H0" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
+                        <img data-src="assets/image/01_arch.webp" alt="Overview of Being-H0" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
                     </div>
                     <h3 class="item-title">Overview of <b><tt>Being-H0</tt></b></h3>
                     <p class="item-description">The <b>text tokenizer</b> and <b>visual encoder</b> are shared by both pretraining and post-training. For pretraining and hand motion/translation tasks, <b><tt>Being-H0</tt></b> generates outputs in an autoregressive manner. For post-training and downstream manipulation tasks, <b><tt>Being-H0</tt></b> incorporates a set of learnable queries as the action chunk for prediction.</p>
@@ -247,7 +246,7 @@
             <div class="grid-one-column">
                 <div class="grid-item">
                     <div class="item-image">
-                        <img data-src="assets/image/02_phy_inst_tune.png" alt="Physical Instruction Tuning" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
+                        <img data-src="assets/image/02_phy_inst_tune.webp" alt="Physical Instruction Tuning" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
                     </div>
                     <h3 class="item-title">Physical Instruction Tuning</h3>
                     <p class="item-description"><b>Physical Instruction Tuning</b> unifies human video datasets and robotic manipulation data. We extend VLM to include motion and action tokens, using multi-head attention across vision, text, motion, and action modalities to create a unified VLA model for robotic tasks.</p>
@@ -259,7 +258,7 @@
             <div class="grid-one-column">
                 <div class="grid-item">
                     <div class="item-image">
-                        <img data-src="assets/image/04_unihand.png" alt="UniHand Dataset" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
+                        <img data-src="assets/image/04_unihand.webp" alt="UniHand Dataset" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
                     </div>
                     <h3 class="item-title"><tt>UniHand-2.5M</tt></h3>
                     <p class="item-description">The overview of our <b><tt>UniHand-2.5M</tt></b>. Left: The scenes and tasks from different data source types. Mid: The distribution of different data sources, data types, and durations. Right: Samples from different data types.</p>
@@ -272,7 +271,7 @@
             <div class="grid-two-column">
                 <div class="grid-item">
                     <div class="item-image">
-                        <img data-src="assets/image/08_data_scaling_law.png" alt="Scaling Law" style="width: 72%; height: 72%; object-fit: cover;" loading="lazy" class="lazy-image">
+                        <img data-src="assets/image/08_data_scaling_law.webp" alt="Scaling Law" style="width: 72%; height: 72%; object-fit: cover;" loading="lazy" class="lazy-image">
                     </div>
                     <h3 class="item-title">Scaling Performance</h3>
                     <p class="item-description">The performance of <b><tt>Being-H0</tt></b> alongside the increasing training data scale for visual-grounded hand motion generation. It scales well with model and data sizes.</p>
@@ -280,7 +279,7 @@
 
                 <div class="grid-item">
                     <div class="item-image">
-                        <img data-src="assets/image/robot_exp.png" alt="Robot Experiments" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
+                        <img data-src="assets/image/robot_exp.webp" alt="Robot Experiments" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
                     </div>
                     <h3 class="item-title">Robot Experiments</h3>
                     <p class="item-description">The advantages of <b><tt>Being-H0</tt></b> are particularly remarkable in dexterous manipulation tasks, where it substantially improves the success rate and requires much less teleoperated demonstrations.</p>
@@ -288,34 +287,6 @@
             </div>
         </section>
 
-        <!-- <section class="section" id="three-column">
-            <h2 class="section-title">Technical Details</h2>
-            <div class="grid-three-column">
-                <div class="grid-item">
-                    <div class="item-image">
-                        <img data-src="assets/image/framework.png" alt="Training pipeline" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
-                    </div>
-                    <h3 class="item-title">Training Strategy</h3>
-                    <p class="item-description">Multi-stage training protocol combining supervised learning, reinforcement learning, and self-supervised techniques for robust skill acquisition.</p>
-                </div>
-
-                <div class="grid-item">
-                    <div class="item-image">
-                        <img data-src="assets/image/framework.png" alt="Performance results" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
-                    </div>
-                    <h3 class="item-title">Benchmark Results</h3>
-                    <p class="item-description">State-of-the-art performance across multiple robotic benchmarks, demonstrating superior task completion rates and interaction quality.</p>
-                </div>
-
-                <div class="grid-item">
-                    <div class="item-image">
-                        <img data-src="assets/image/framework.png" alt="Applications" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" class="lazy-image">
-                    </div>
-                    <h3 class="item-title">Applications</h3>
-                    <p class="item-description">Diverse real-world applications spanning household assistance, manufacturing, and service robotics with proven effectiveness.</p>
-                </div>
-            </div>
-        </section> -->
 
         <!-- BibTeX Citation Section -->
         <section class="section" id="citation">

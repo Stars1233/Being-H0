@@ -154,8 +154,6 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(2.5px);
-    -webkit-backdrop-filter: blur(2.5px);
     z-index: -1;
 }
 
@@ -228,7 +226,7 @@ body {
     padding: 2rem;
     text-align: center;
     background: transparent;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.7), 2px 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.95), 0 0 40px rgba(0, 0, 0, 0.8), 2px 2px 8px rgba(0, 0, 0, 0.9), 0 0 60px rgba(0, 0, 0, 0.6);
     max-width: min(1200px, 85vw);
     margin-left: auto;
     margin-right: auto;
@@ -248,7 +246,7 @@ body {
     margin-bottom: 0.5rem;
     font-weight: 400;
     transition: color 0.3s ease;
-    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 16px rgba(0, 0, 0, 0.6), 1px 1px 3px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.95), 0 0 30px rgba(0, 0, 0, 0.7), 1px 1px 6px rgba(0, 0, 0, 0.9), 0 0 45px rgba(0, 0, 0, 0.5);
 }
 
 .author-link {

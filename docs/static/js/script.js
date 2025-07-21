@@ -262,7 +262,7 @@ function renderDatasets() {
         const thumbnailPath = getDatasetThumbnail(dataset.name);
         card.innerHTML = `
             <div class="dataset-image">
-                <img src="${thumbnailPath}" alt="${dataset.name}" onerror="this.src='assets/image/framework.png'">
+                <img src="${thumbnailPath}" alt="${dataset.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22 viewBox=%220 0 200 150%22%3E%3Crect width=%22200%22 height=%22150%22 fill=%22%23f5f5f7%22/%3E%3Ctext x=%22100%22 y=%2280%22 font-family=%22system-ui%22 font-size=%2214%22 fill=%22%23666%22 text-anchor=%22middle%22%3EImage not found%3C/text%3E%3C/svg%3E'">
                 <div class="dataset-text-overlay">${dataset.name}</div>
             </div>
             <div class="dataset-name">${dataset.name}</div>
@@ -304,7 +304,7 @@ function renderTasks(datasetIndex = null) {
         const thumbnailPath = getTaskThumbnail(dataset.name, task.id);
         card.innerHTML = `
             <div class="task-image">
-                <img src="${thumbnailPath}" alt="${task.name}" onerror="this.src='assets/image/framework.png'">
+                <img src="${thumbnailPath}" alt="${task.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22 viewBox=%220 0 200 150%22%3E%3Crect width=%22200%22 height=%22150%22 fill=%22%23f5f5f7%22/%3E%3Ctext x=%22100%22 y=%2280%22 font-family=%22system-ui%22 font-size=%2214%22 fill=%22%23666%22 text-anchor=%22middle%22%3EImage not found%3C/text%3E%3C/svg%3E'">
             </div>
             <div class="task-name">${task.name}</div>
         `;
@@ -625,7 +625,7 @@ function showDatasetImage(imageSrc, title) {
     
     // Handle image loading error
     image.onerror = () => {
-        image.src = 'assets/image/framework.png';
+        image.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22 viewBox=%220 0 400 300%22%3E%3Crect width=%22400%22 height=%22300%22 fill=%22%23f5f5f7%22/%3E%3Ctext x=%22200%22 y=%22160%22 font-family=%22system-ui%22 font-size=%2218%22 fill=%22%23666%22 text-anchor=%22middle%22%3EImage not found%3C/text%3E%3C/svg%3E';
         // Reset to default aspect ratio on error
         videoDisplay.style.aspectRatio = '16/9';
     };
