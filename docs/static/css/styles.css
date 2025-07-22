@@ -1469,6 +1469,24 @@ body {
     border-color: var(--hover-border);
 }
 
+/* Cross-platform teletype font styling */
+tt {
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Ubuntu Mono', 'Roboto Mono', Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.95em;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Bold text within teletype elements */
+tt b,
+tt strong,
+b tt,
+strong tt {
+    font-weight: 800;
+}
 
 /* Apple-style elegant Interactive Demo Section */
 /* Interactive Demo - Hierarchical Navigation */
