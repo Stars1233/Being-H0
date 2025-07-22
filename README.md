@@ -14,7 +14,7 @@
 </div>
 
 <p align="center">
-    <img src="docs/assets/image/overview.jpg"/>
+    <img src="docs/assets/image/overview.png"/>
 <p>
 
 
