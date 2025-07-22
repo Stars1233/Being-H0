@@ -11,6 +11,7 @@
     
     <!-- Preload critical assets -->
     <link rel="preload" as="image" href="assets/image/being-h0.webp">
+    <link rel="preload" as="video" href="assets/video/background.webm" type="video/webm">
     
     <!-- External CSS -->
     <link rel="stylesheet" href="static/css/styles.css">
@@ -22,7 +23,7 @@
     <!-- Header Section -->
     <header class="header" id="header">
         <!-- Background Video -->
-        <video class="background-video" autoplay muted loop playsinline preload="metadata" disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback">
+        <video class="background-video" autoplay muted loop playsinline preload="auto" disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback">
             <source src="assets/video/background.webm" type="video/webm">
             <!-- Fallback for browsers that don't support video -->
             <div class="video-fallback"></div>

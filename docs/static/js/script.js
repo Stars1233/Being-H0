@@ -922,23 +922,29 @@ document.addEventListener('DOMContentLoaded', () => {
         initBackgroundVideo(); // Initialize background video
     }, 100);
     
-    // Handle window resize for sliders
+    // Handle window resize for sliders (throttled for performance)
+    let resizeThrottle;
     window.addEventListener('resize', () => {
-        datasetSliderOffset = 0;
-        taskSliderOffset = 0;
-        
-        const datasetTrack = document.getElementById('datasetTrack');
-        const taskTrack = document.getElementById('taskTrack');
-        
-        if (datasetTrack) {
-            datasetTrack.style.transform = 'translateX(0)';
+        if (!resizeThrottle) {
+            resizeThrottle = setTimeout(() => {
+                datasetSliderOffset = 0;
+                taskSliderOffset = 0;
+                
+                const datasetTrack = document.getElementById('datasetTrack');
+                const taskTrack = document.getElementById('taskTrack');
+                
+                if (datasetTrack) {
+                    datasetTrack.style.transform = 'translateX(0)';
+                }
+                if (taskTrack) {
+                    taskTrack.style.transform = 'translateX(0)';
+                }
+                
+                updateDatasetSliderControls();
+                updateTaskSliderControls();
+                resizeThrottle = null;
+            }, 100);
         }
-        if (taskTrack) {
-            taskTrack.style.transform = 'translateX(0)';
-        }
-        
-        updateDatasetSliderControls();
-        updateTaskSliderControls();
     });
 });
 
