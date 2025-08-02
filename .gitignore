@@ -1,3 +1,10 @@
+# custom
+*.egg-info/
+.env
+__pycache__/
+.deepspeed_env
+work_dirs/
+
 # macOS
 .DS_Store
 .DS_Store?
