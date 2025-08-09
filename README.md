@@ -97,6 +97,7 @@ python -m beingvla.inference.vla_internvl_inference \
 ```
 
 - **To inference on your own photos**: See [Camera Intrinsics Guide](docs/camera_intrinsics.md) for how to estimate camera intrinsics and input them for custom inference.
+- Please note that our example images are also photos we took ourselves for testing out-of-distribution (OOD) inference. Therefore, their inference may not perfectly follow the task instruction. You may set a larger `num_seconds` to allow it to fully complete the tasks. For the best results, we recommend using test images from the original dataset used to build the pre-training data for inference (eg, EgoDex, TACO, FPHA, etc). However, due to licensing restrictions, we do not provide them directly in this repository. You may need to download the test sets of these datasets yourself.
 
 ### Evaluation
 
