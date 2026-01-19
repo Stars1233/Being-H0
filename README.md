@@ -1,4 +1,4 @@
-# Being-H05: Unified Vision-Language-Action Model for Multi-Embodiment Robot Manipulation
+# Being-H0.5: Scaling Human-Centric Robot Learning for Cross-Embodiment Generalization
 
 <div align="center">
 
