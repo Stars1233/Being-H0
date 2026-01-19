@@ -4,6 +4,8 @@
 __pycache__/
 .deepspeed_env
 work_dirs/
+results/
+swanlog/
 
 # macOS
 .DS_Store
@@ -47,6 +49,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.pyc
 .Python
 env/
 venv/
