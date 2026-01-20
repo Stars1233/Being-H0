@@ -10,6 +10,11 @@
 
 Being-H0.5 is a foundational VLA model that scales human-centric learning with UniHand-2.0 and a unified action space to enable robust cross-embodiment robot control.
 
+<div align="center">
+<video src="https://github.com/user-attachments/assets/36714389-e737-4b11-8dcf-9076cc9f1d69" controls>
+</video>
+</div>
+
 *(For our previous Being-H0 version, please visit the [being-h0](https://github.com/BeingBeyond/Being-H/tree/being-h0) branch.)*
 
 ## News
