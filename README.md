@@ -24,7 +24,7 @@ Download models from Hugging Face:
 
 | Model Type | Model Name | Parameters | Description |
 |------------|------------|------------|-------------|
-| **VLA Pretrained** | [Being-H05-2B](https://huggingface.co/BeingBeyond/Being-H05-2B) | 2B | Base vision-language-action model |
+| **VLA Pretrained** | [Being-H05-2B](https://huggingface.co/BeingBeyond/Being-H05-2B) | 2B | Base vision-language-action model (preview) |
 | **VLA Specialist** | [Being-H05-2B_libero](https://huggingface.co/BeingBeyond/Being-H05-2B_libero) | 2B | Post-trained on LIBERO benchmark |
 | **VLA Specialist** | [Being-H05-2B_robocasa](https://huggingface.co/BeingBeyond/Being-H05-2B_robocasa) | 2B | Post-trained on RoboCasa kitchen tasks |
 | **VLA Generalist** | [Being-H05-2B_libero_robocasa](https://huggingface.co/BeingBeyond/Being-H05-2B_libero_robocasa) | 2B | Post-trained on both LIBERO and RoboCasa |
