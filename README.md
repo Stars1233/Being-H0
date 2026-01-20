@@ -1,10 +1,15 @@
 # Being-H0.5: Scaling Human-Centric Robot Learning for Cross-Embodiment Generalization
 
+<p align="center">
+    <img src="assets/being-h05.png" width="300"/>
+<p>
+
 <div align="center">
 
 [![Blog](https://img.shields.io/badge/Blog-Being--H05-green)](https://research.beingbeyond.com/being-h05)
-[![arXiv](https://img.shields.io/badge/arXiv-2601.xxxxx-b31b1b.svg)](https://research.beingbeyond.com/projects/being-h05/being-h05.pdf)
+[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b.svg)](https://research.beingbeyond.com/projects/being-h05/being-h05.pdf)
 [![Models](https://img.shields.io/badge/🤗%20Hugging%20Face-Models-yellow)](https://huggingface.co/collections/BeingBeyond/being-h05)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
 </div>
 
@@ -19,7 +24,7 @@ Being-H0.5 is a foundational VLA model that scales human-centric learning with U
 
 ## News
 
-- **[2026-01-20]**: We release the **Being-H0.5** codebase! Check our [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h05) for pretrained and post-trained models. 🔥🔥🔥
+- **[2026-01-20]**: We publish the **Being-H0.5**! Check our [Paper](https://research.beingbeyond.com/projects/being-h05/being-h05.pdf) for technical details and [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h05) for pretrained and post-trained models. 🔥🔥🔥
 - **[2025-08-02]**: We release the **Being-H0** codebase and pretrained models! Check our [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h0) for more details. 🔥🔥🔥
 - **[2025-07-21]**: We publish **Being-H0**! Check our paper [here](https://arxiv.org/abs/2507.15597). 🌟🌟🌟
 
