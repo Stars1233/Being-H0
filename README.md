@@ -29,6 +29,7 @@ Download models from Hugging Face:
 | **VLA Specialist** | [Being-H05-2B_robocasa](https://huggingface.co/BeingBeyond/Being-H05-2B_robocasa) | 2B | Post-trained on RoboCasa kitchen tasks |
 | **VLA Generalist** | [Being-H05-2B_libero_robocasa](https://huggingface.co/BeingBeyond/Being-H05-2B_libero_robocasa) | 2B | Post-trained on both LIBERO and RoboCasa |
 
+Note: the vision part is 224px by default.
 
 ## Setup
 
