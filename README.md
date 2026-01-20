@@ -146,6 +146,7 @@ We encourage researchers and practitioners to leverage Being-H05 as a foundation
 Being-H05 builds on the following excellent open-source projects:
 
 - [InternVL](https://github.com/OpenGVLab/InternVL): Vision-Language model backbone
+- [Bagel]([https://github.com/OpenGVLab/InternV](https://github.com/ByteDance-Seed/Bagel): Training framework
 - [Qwen](https://github.com/QwenLM/Qwen): Language model and MoE expert
 - [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO): Benchmark for lifelong robot learning
 - [RoboCasa](https://github.com/robocasa/robocasa): Large-scale simulation benchmark for everyday tasks
@@ -169,5 +170,17 @@ If you find our work useful, please consider citing us and give a star to our re
   title={Being-H0.5: Scaling Human-Centric Robot Learning for Cross-Embodiment Generalization},
   author={BeingBeyond Team},
   year={2026}
+}
+```
+
+
+**Being-H0**
+
+```
+@article{beingbeyond2025beingh0,
+  title={Being-H0: Vision-Language-Action Pretraining from Large-Scale Human Videos},
+  author={Luo, Hao and Feng, Yicheng and Zhang, Wanpeng and Zheng, Sipeng and Wang, Ye and Yuan, Haoqi and Liu, Jiazheng and Xu, Chaoyi and Jin, Qin and Lu, Zongqing},
+  journal={arXiv preprint arXiv:2507.15597},
+  year={2025}
 }
 ```
