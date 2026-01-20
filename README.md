@@ -146,7 +146,7 @@ We encourage researchers and practitioners to leverage Being-H05 as a foundation
 Being-H05 builds on the following excellent open-source projects:
 
 - [InternVL](https://github.com/OpenGVLab/InternVL): Vision-Language model backbone
-- [Bagel]([https://github.com/OpenGVLab/InternV](https://github.com/ByteDance-Seed/Bagel): Training framework
+- [Bagel](https://github.com/ByteDance-Seed/Bagel): Training framework
 - [Qwen](https://github.com/QwenLM/Qwen): Language model and MoE expert
 - [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO): Benchmark for lifelong robot learning
 - [RoboCasa](https://github.com/robocasa/robocasa): Large-scale simulation benchmark for everyday tasks
