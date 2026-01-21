@@ -7,7 +7,7 @@
 <div align="center">
 
 [![Blog](https://img.shields.io/badge/Blog-Being--H05-green)](https://research.beingbeyond.com/being-h05)
-[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b.svg)](https://research.beingbeyond.com/projects/being-h05/being-h05.pdf)
+[![Paper](https://img.shields.io/badge/arXiv-Paper-b31b1b.svg)](https://arxiv.org/pdf/2601.12993)
 [![Models](https://img.shields.io/badge/🤗%20Hugging%20Face-Models-yellow)](https://huggingface.co/collections/BeingBeyond/being-h05)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
@@ -24,9 +24,9 @@ Being-H0.5 is a foundational VLA model that scales human-centric learning with U
 
 ## News
 
-- **[2026-01-20]**: We publish the **Being-H0.5**! Check our [Paper](https://research.beingbeyond.com/projects/being-h05/being-h05.pdf) for technical details and [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h05) for pretrained and post-trained models. 🔥🔥🔥
+- **[2026-01-20]**: We publish the **Being-H0.5**! Check our [Paper](https://arxiv.org/pdf/2601.12993) for technical details and [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h05) for pretrained and post-trained models. 🔥🔥🔥
 - **[2025-08-02]**: We release the **Being-H0** codebase and pretrained models! Check our [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h0) for more details. 🔥🔥🔥
-- **[2025-07-21]**: We publish **Being-H0**! Check our paper [here](https://arxiv.org/abs/2507.15597). 🌟🌟🌟
+- **[2025-07-21]**: We publish **Being-H0**! Check our paper [here](https://arxiv.org/pdf/2507.15597). 🌟🌟🌟
 
 ## Model Checkpoints
 
@@ -177,19 +177,19 @@ If you find our work useful, please consider citing us and give a star to our re
 **Being-H05**
 
 ```bibtex
-@misc{beingbeyond2026beingh05,
-  title={Being-H0.5: Scaling Human-Centric Robot Learning for Cross-Embodiment Generalization},
-  author={BeingBeyond Team},
+@article{beingbeyond2026beingh05,
+  title={Being-H0.5: Scaling Human-Centric Robot Learning for Cross-Embodiment Generalization}, 
+  author={Luo, Hao and Wang, Ye and Zhang, Wanpeng and Zheng, Sipeng and Xi, Ziheng and Xu, Chaoyi and Xu, Haiweng and Yuan, Haoqi and Zhang, Chi and Wang, Yiqing and Feng, Yicheng and Lu, Zongqing},
+  journal={arXiv preprint arXiv:2601.12993},
   year={2026}
 }
 ```
 
-
 **Being-H0**
 
-```
+```bibtex
 @article{beingbeyond2025beingh0,
-  title={Being-H0: Vision-Language-Action Pretraining from Large-Scale Human Videos},
+  title={Being-h0: vision-language-action pretraining from large-scale human videos},
   author={Luo, Hao and Feng, Yicheng and Zhang, Wanpeng and Zheng, Sipeng and Wang, Ye and Yuan, Haoqi and Liu, Jiazheng and Xu, Chaoyi and Jin, Qin and Lu, Zongqing},
   journal={arXiv preprint arXiv:2507.15597},
   year={2025}
