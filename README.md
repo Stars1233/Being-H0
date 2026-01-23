@@ -13,7 +13,7 @@
 
 </div>
 
-Being-H0.5 is a foundational VLA model that scales human-centric learning with UniHand-2.0 and a unified action space to enable robust cross-embodiment robot control.
+Being-H0.5 is a foundational VLA model that scales human-centric learning with unified action space to enable robust cross-embodiment robot control.
 
 <div align="center">
 <video src="https://github.com/user-attachments/assets/36714389-e737-4b11-8dcf-9076cc9f1d69" controls>
@@ -24,13 +24,15 @@ Being-H0.5 is a foundational VLA model that scales human-centric learning with U
 
 ## News
 
+
+- **[2026-01-24]**: We’ve updated the training, inference, and data configurations along with complete post-training scripts for Being-H0.5. Additionally, post-training data for the PND Adam-U robot is now open-sourced. Download it via our [Hugging Face Dataset Collections](https://huggingface.co/collections/BeingBeyond/pnd-adam-u-data).
 - **[2026-01-20]**: We publish the **Being-H0.5**! Check our [Paper](https://arxiv.org/pdf/2601.12993) for technical details and [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h05) for pretrained and post-trained models. 🔥🔥🔥
 - **[2025-08-02]**: We release the **Being-H0** codebase and pretrained models! Check our [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h0) for more details. 🔥🔥🔥
 - **[2025-07-21]**: We publish **Being-H0**! Check our paper [here](https://arxiv.org/pdf/2507.15597). 🌟🌟🌟
 
 ## Model Checkpoints
 
-Download models from Hugging Face:
+Download models from Hugging Face [Model Collections](https://huggingface.co/collections/BeingBeyond/being-h05):
 
 | Model Type | Model Name | Parameters | Description |
 |------------|------------|------------|-------------|
@@ -41,120 +43,114 @@ Download models from Hugging Face:
 
 Note: the vision part is 224px by default.
 
-## Setup
+## Quick Start
 
-### Clone repository
-
-```bash
-git clone https://github.com/BeingBeyond/Being-H05.git
-cd Being-H05
-```
-
-### Create environment
+### Installation
 
 ```bash
+git clone https://github.com/BeingBeyond/Being-H.git
+cd Being-H
 conda create -n beingh python=3.10
 conda activate beingh
-```
-
-### Install package
-
-```bash
 pip install -r requirements.txt
 pip install flash-attn --no-build-isolation
 ```
 
-## Inference
-
-### Quick Start
-
-Use the pretrained or post-trained model for robot policy inference:
+### Inference
 
 ```python
 from BeingH.inference.beingh_policy import BeingHPolicy
 
-# Load model
+# Load a pre-trained policy
 policy = BeingHPolicy(
-    model_path="/path/to/Being-H05-2B_libero",
-    device="cuda:0"
+    model_path="<path-to-checkpoint>",      # Path to Being-H checkpoint
+    data_config_name="<config-name>",       # e.g., "libero_nonorm", "robocasa_human"
+    dataset_name="<dataset-name>",          # For loading normalization stats
+    embodiment_tag="<robot-tag>",           # Robot identifier
+    instruction_template="<prompt>",        # Task instruction template
 )
 
-# Get action from observation
-action = policy.predict(
-    images=images,
-    state=robot_state,
-    instruction="task prompt"
+# Run inference
+actions = policy.get_action(observations)
+```
+
+See [docs/inference.md](docs/inference.md) for the complete API reference.
+
+### Training
+
+```bash
+# Single-embodiment training (e.g., LIBERO)
+bash scripts/train_libero_example.sh
+
+# Cross-embodiment training (multiple robots)
+bash scripts/train_cross_emb_example.sh
+```
+
+**Important for cross-embodiment training:** Enable `--save_merged_metadata True` to save hierarchical metadata for inference. See [docs/training.md](docs/training.md) for details.
+
+## Supported Robots
+
+Being-H currently provides example configurations for **LIBERO** and **RoboCasa** benchmarks. We will gradually release more pre-built configurations for additional robot platforms.
+
+To add your own robot, refer to our example configurations and the [Unified Action Space](docs/unified_action_space.md) slot layout, then follow the guide in [Data Configuration](docs/data_configuration.md).
+
+Don't see your robot? [Open an issue](https://github.com/BeingBeyond/Being-H/issues) with your robot specs and a data sample - we're happy to help add support.
+
+## How It Works: Unified Action Space
+
+Being-H uses a **200-dimensional unified action space** that maps different robots to a shared semantic representation. This is what enables cross-embodiment transfer.
+
+**The key insight**: Similar robot components (e.g., end-effector position) always map to the same dimensions, regardless of the robot type. This allows knowledge to transfer between robots.
+
+For most users, you don't need to understand the details - just use one of the pre-built configurations. For advanced users who want to add custom robots, see the complete documentation:
+
+**[Unified Action Space Guide](docs/unified_action_space.md)** - Complete slot layout and configuration examples
+
+## Cross-Embodiment Metadata
+
+For cross-embodiment models, Being-H saves **metadata** during training that is essential for inference. This metadata contains normalization statistics for each task/embodiment.
+
+When running inference on a cross-embodiment model, specify which metadata variant to use:
+
+```python
+policy = BeingHPolicy(
+    model_path="<path-to-checkpoint>",
+    dataset_name="uni_posttrain",              # Cross-embodiment dataset
+    metadata_variant="<task-or-embodiment>",   # Select normalization stats
+    stats_selection_mode="task",               # "task", "embodiment", or "auto"
+    # ... other parameters
 )
 ```
 
-### Inference Server
+See [docs/inference.md](docs/inference.md#cross-embodiment-metadata) for details.
 
-Start an inference server for real-time robot control:
+## Documentation
 
-```bash
-python BeingH/inference/service.py \
-    --model_path /path/to/Being-H05-2B_libero \
-    --port 8000 \
-    --device cuda:0
-```
-
-### Evaluation on Benchmarks
-
-Evaluate the model on LIBERO benchmark:
-
-```bash
-python BeingH/benchmark/libero/eval_libero.py \
-    --model_path /path/to/Being-H05-2B_libero \
-    --suite libero_spatial \
-    --num_episodes 50
-```
-
-Evaluate the model on RoboCasa benchmark:
-
-```bash
-python BeingH/benchmark/robocasa/eval_robocasa.py \
-    --model_path /path/to/Being-H05-2B_robocasa \
-    --task PnPCounterToCab \
-    --num_episodes 50
-```
-
-## Training
-
-### Post-Training on Custom Data
-
-Post-train the pretrained model on your own robot data:
-
-```bash
-torchrun --nproc_per_node=8 BeingH/train/train.py \
-    --mllm_path /path/to/InternVL3_5-2B \
-    --expert_path /path/to/Qwen3-0.6B \
-    --resume_from /path/to/Being-H05-2B \
-    --resume_model_only True \
-    --dataset_config_file configs/posttrain/libero/libero_all.yaml \
-    --output_dir /path/to/output \
-    --max_steps 30000 \
-    --save_steps 10000 \
-    --learning_rate 1e-4 \
-    --action_chunk_length 16
-```
+| Document | Description |
+|----------|-------------|
+| [Unified Action Space](docs/unified_action_space.md) | How cross-embodiment transfer works |
+| [Data Configuration](docs/data_configuration.md) | Adding custom robots and datasets |
+| [Training](docs/training.md) | Training parameters and scripts |
+| [Inference](docs/inference.md) | BeingHPolicy API reference |
+| [Evaluation](docs/evaluation.md) | LIBERO and RoboCasa benchmarks |
 
 ## TODO
 
 The following features are planned for future implementation:
 
-- [ ] Complete pretraining scripts and documentation
-- [ ] Complete post-training scripts for all benchmarks
-- [ ] Detailed training and data documentation
 - [ ] Out-of-the-box real robot pretrained checkpoints
-- [ ] Benchmark evaluation scripts for all supported tasks
+- [ ] Complete pretraining scripts and documentation
+- [x] Complete post-training scripts for all benchmarks
+- [x] Detailed training and data documentation
+- [x] Benchmark evaluation scripts for all supported tasks
 
-## Contributing and Building on Being-H05
+## Contributing and Building on Being-H
 
-We encourage researchers and practitioners to leverage Being-H05 as a foundation for their own experiments and applications. Whether you're adapting Being-H05 to new robotic platforms, exploring novel manipulation tasks, or extending the model to new domains, our modular codebase is designed to support your innovations. We welcome contributions of all kinds - from bug fixes and documentation improvements to new features and model architectures. By building on Being-H05 together, we can advance the field of vision-language-action modeling and enable robots to perform more complex and diverse manipulation tasks. Join us in making robotic manipulation more capable, robust, and accessible to all.
+We encourage researchers and practitioners to leverage Being-H as a foundation for their own experiments and applications. Whether you're adapting Being-H to new robotic platforms, exploring novel manipulation tasks, or extending the model to new domains, our modular codebase is designed to support your innovations. We welcome contributions of all kinds - from bug fixes and documentation improvements to new features and model architectures. By building on Being-H together, we can advance the field of vision-language-action modeling and enable robots to perform more complex and diverse manipulation tasks. Join us in making robotic manipulation more capable, robust, and accessible to all.
 
 ## Acknowledgments
 
-Being-H05 builds on the following excellent open-source projects:
+Being-H builds on the following excellent open-source projects:
 
 - [InternVL](https://github.com/OpenGVLab/InternVL): Vision-Language model backbone
 - [Bagel](https://github.com/ByteDance-Seed/Bagel): Training framework
@@ -174,7 +170,7 @@ SPDX-License-Identifier: Apache-2.0
 
 If you find our work useful, please consider citing us and give a star to our repository! 🌟🌟🌟
 
-**Being-H05**
+**Being-H0.5**
 
 ```bibtex
 @article{beingbeyond2026beingh05,

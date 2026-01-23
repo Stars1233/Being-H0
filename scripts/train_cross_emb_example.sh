@@ -1,6 +1,9 @@
 # !/bin/bash
 # Copyright (c) 2026 BeingBeyond Ltd. and/or its affiliates.
 # SPDX-License-Identifier: Apache-2.0
+#
+# Cross-Embodiment Training Example
+# This script demonstrates training on multiple embodiments (LIBERO + RoboCasa)
 
 export PYTHONPATH=.
 export NCCL_IB_DISABLE=0
@@ -9,20 +12,23 @@ export NO_ALBUMENTATIONS_UPDATE=1
 # ============ Model and Data Paths ============
 PRETRAIN_MODEL="/path/to/InternVL3_5-2B"
 EXPERT_MODEL="/path/to/Qwen3-0.6B"
-RESUME_ROOT="/path/models/" # root path for pretrained Being-H05 models
+RESUME_ROOT="/path/to/model_zoo/"
 RESUME_MODEL="Being-H05-2B"
 RESUME_PATH="${RESUME_ROOT}/${RESUME_MODEL}"
-EMBODIMENT="libero"
-EMBODIMENT_DATASET="libero_all"
+EMBODIMENT="cross-embodiment"
+EMBODIMENT_DATASET="libero_robocasa"
+# Cross-embodiment dataset config
 DATASET_CONFIG_FILE="configs/posttrain/${EMBODIMENT}/${EMBODIMENT_DATASET}.yaml"
+
+# IMPORTANT: Enable merged metadata for cross-embodiment inference
 SAVE_MERGED_META=True
 
 # ============ Training Configuration ============
 NUM_GPUS=4
-MAX_STEPS=60000
+MAX_STEPS=120000
 SAVE_STEPS=10000
-SAVE_STEPS_START=25000
-SAVE_MODEL_ONLY=True
+SAVE_STEPS_START=50000
+SAVE_MODEL_ONLY=False
 LEARNING_RATE=1e-4
 WEIGHT_DECAY=1e-5
 WARMUP_RATIO=0.05
@@ -51,9 +57,7 @@ ACTION_CHUNK_LENGTH=16
 FREEZE_MLLM=False
 FREEZE_VIT_MLP=False
 
-# =============================================================================
-# MPG Configuration
-# =============================================================================
+# ============ MPG Configuration ============
 USE_MPG=True
 MPG_LAMBDA=0.1
 MPG_NUM_PROJECTIONS=32
@@ -61,26 +65,24 @@ MPG_REFINEMENT_ITERS=1
 MPG_GATE_TEMPERATURE=1.0
 MPG_USE_STOP_GRADIENT=True
 
-# =============================================================================
-# Training-Time RTC Configuration
-# =============================================================================
+# ============ Training-Time RTC Configuration ============
 USE_TRAINING_TIME_RTC=False
 SIMULATED_DELAY=0
 RTC_DELAY_EXP_WEIGHT=True
 USE_INFERENCE_PREFIX_OVERWRITE=True
 
 # ============ Output Configuration ============
-MODEL_NAME="post-${EMBODIMENT_DATASET}_${RESUME_MODEL}_freeze_mllm-${FREEZE_MLLM}_chunk-${ACTION_CHUNK_LENGTH}_mpg-${USE_MPG}_lambda-${MPG_LAMBDA}_proj-${MPG_NUM_PROJECTIONS}_refine-${MPG_REFINEMENT_ITERS}_rtc-${USE_TRAINING_TIME_RTC}_d-${SIMULATED_DELAY}_$(date +%Y%m%d_%H%M%S)"
+MODEL_NAME="post-cross_emb_${RESUME_MODEL}_mpg-${USE_MPG}_$(date +%Y%m%d_%H%M%S)"
 OUTPUT_DIR="/path/to/save/${MODEL_NAME}"
 LOG_DIR="results/tensorboard/post"
-LOG_FILE="${OUTPUT_DIR}/training.log"  # Store log in output directory
+LOG_FILE="${OUTPUT_DIR}/training.log"
 
 # Create output directory
 if [ ! -d "$OUTPUT_DIR" ]; then
   mkdir -p "$OUTPUT_DIR"
 fi
 
-# Copy script and code for reproducibility
+# Copy script for reproducibility
 cp "$0" "${OUTPUT_DIR}/"
 mkdir -p "${OUTPUT_DIR}/code"
 cp -r BeingH "${OUTPUT_DIR}/code/"
@@ -148,7 +150,7 @@ torchrun \
   2>&1 | tee "${LOG_FILE}"
 
 echo "=========================================="
-echo "Training Complete!"
+echo "Cross-Embodiment Training Complete!"
 echo "Output: ${OUTPUT_DIR}"
-echo "Log: ${LOG_FILE}"
+echo "Metadata: ${OUTPUT_DIR}/experiment_cfg/"
 echo "=========================================="
