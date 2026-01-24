@@ -72,11 +72,20 @@ The 200-dimensional space is semantically organized into slots. Each slot has a 
 | 74-75 | `control_mode` | 1 | Control mode flag |
 | 75-76 | Reserved | 1 | Reserved for future use |
 
-### Reserved (Dims 76-200)
+### Reserved (Dims 76-90)
 
 | Slot Range | Description |
 |------------|-------------|
-| 76-200 | Reserved for future embodiments and extensions |
+| 76-90 | Reserved for future embodiments and extensions |
+
+### Human Hands (Dims 90-200)
+
+| Slot Range | Semantic Name | Dimensions | Description |
+|------------|---------------|------------|-------------|
+| 90-100     | `right_beta`  | 10         | Right Hand Shape        (only for state, MANO parameter $\beta$)  |
+| 100-110    | `left_beta`   | 10         | Left  Hand Shape        (only for state, MANO parameter $\beta$)  |
+| 110-155    | `right_theta` | 45         | Right Hand Articulation (axis-angle,     MANO parameter $\theta$) |
+| 155-200    | `left_theta`  | 45         | Left  Hand Articulation (axis-angle,     MANO parameter $\theta$) |
 
 ## UNIFIED_MAPPING
 
