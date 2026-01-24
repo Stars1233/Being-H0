@@ -49,6 +49,21 @@ bash scripts/train_cross_emb_example.sh
 | `--action_chunk_length` | `16` | Actions per chunk |
 | `--resume_model_only` | `False` | Only load model weights |
 
+## Action Expert Initialization
+
+Being-H uses a Mixture of **Action Expert** architecture for action prediction. The initialization behavior depends on your training scenario:
+
+| Scenario | Action Expert Initialization |
+|----------|------------------------------|
+| **Pretraining from scratch** | Random initialization by default (not from Qwen3-0.6B pretrained weights) |
+| **Post-training with `--resume_from`** | Loaded from checkpoint via `load_state_dict()` (inherits pretrained Action Expert weights) |
+
+**Key Points:**
+
+- When starting pretraining from scratch, the Action Expert parameters are randomly initialized, even though the architecture follows Qwen3-0.6B design
+- When post-training using `--resume_from /path/to/Being-H05-2B`, all model weights (including the trained Action Expert) are loaded from the checkpoint
+- The codebase provides infrastructure to initialize the Action Expert from pretrained Qwen weights (`init_expert()` with `from_scratch=False`), but this is not used in our practice
+
 ## Data Arguments
 
 | Argument | Default | Description |

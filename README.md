@@ -56,6 +56,18 @@ pip install -r requirements.txt
 pip install flash-attn --no-build-isolation
 ```
 
+### Training
+
+```bash
+# Single-embodiment training (e.g., LIBERO)
+bash scripts/train_libero_example.sh
+
+# Cross-embodiment training (multiple robots)
+bash scripts/train_cross_emb_example.sh
+```
+
+**Important for cross-embodiment training:** Enable `--save_merged_metadata True` to save hierarchical metadata for inference. See [docs/training.md](docs/training.md) for details.
+
 ### Inference
 
 ```python
@@ -75,18 +87,6 @@ actions = policy.get_action(observations)
 ```
 
 See [docs/inference.md](docs/inference.md) for the complete API reference.
-
-### Training
-
-```bash
-# Single-embodiment training (e.g., LIBERO)
-bash scripts/train_libero_example.sh
-
-# Cross-embodiment training (multiple robots)
-bash scripts/train_cross_emb_example.sh
-```
-
-**Important for cross-embodiment training:** Enable `--save_merged_metadata True` to save hierarchical metadata for inference. See [docs/training.md](docs/training.md) for details.
 
 ## Supported Robots
 
