@@ -1,52 +1,45 @@
 #!/bin/bash
 
-# ============================================================
-# LIBERO Benchmark Evaluation Script
-# ============================================================
-
-RUN_NUM=0
+RUN_NUM=6
 export CUDA_VISIBLE_DEVICES=${RUN_NUM}
 export PYTHONPATH=.
 
-# --- Model Configuration ---
-MODEL_PATH="<path-to-checkpoint>"           # e.g., /path/to/Being-H05-2B_libero
-MODEL_NAME="<checkpoint-name>"              # e.g., Being-H05-2B_libero
+# ============================================================
+# Configuration
+# ============================================================
 
-# --- Task Suite ---
-# Options: "spatial", "object", "goal", "long", "10"
-EVAL_SUITES=("spatial" "object" "goal" "long")
+# Model checkpoint directory
+MODEL_ROOT="<path-to-model-root>" # root directory for model checkpoints
+MODEL_NAME="Being-H05-2B_libero"
+MODEL_PATH="${MODEL_ROOT}/${MODEL_NAME}"
 
-# --- Server Configuration ---
+# Choose one libero task suite:
+EVAL_SUITES=("spatial") # spatial, object, goal, 10
+# Or evaluate all suites sequentially:
+# EVAL_SUITES=("spatial" "object" "goal" "10")
+
+# Set eval conda environment name, which will be activated after launching policy server
+EVAL_CONDA_ENV="libero"
+
+# Server configuration
 SERVER_PORT=1888${RUN_NUM}
 SERVER_LOG_FILE="results/eval/logs/${MODEL_NAME}/server_${SERVER_PORT}.log"
 mkdir -p "results/eval/logs/${MODEL_NAME}"
 
+# Initialize PID variables
 SERVER_PID=""
 EVAL_PID=""
 
-echo "=============== LIBERO Evaluation ==============="
-echo "Model: ${MODEL_PATH}"
+echo "Model directory: ${MODEL_PATH}"
 
-# --- Data Configuration ---
+# --- Server Configuration ---
 DATA_CONFIG_NAME="libero_nonorm"
 EMBODIMENT_TAG="libero"
 DATASET_NAME="libero_posttrain"
-STATS_SELECTION_MODE="task"
-
-# For cross-embodiment models, uncomment and set:
-# DATASET_NAME="uni_posttrain"
-# METADATA_VARIANT="libero_spatial"  # or specific task name
 
 SERVER_SEED=42
 SERVER_PROMPT_TEMP=long
 SERVER_MAX_VIEW_NUM=-1
-
-# --- MPG Configuration ---
-USE_MPG=True
-MPG_LAMBDA=0.1
-MPG_NUM_PROJECTIONS=32
-MPG_REFINEMENT_ITERS=1
-MPG_GATE_TEMPERATURE=2.0
 
 # --- Evaluation Configuration ---
 EVAL_SEED=41
@@ -67,6 +60,7 @@ kill_tree() {
         kill_tree "$_child" "$_sig"
     done
     if kill -0 "$_pid" 2>/dev/null; then
+        echo "    -> Cleaning up process PID: $_pid"
         kill -$_sig "$_pid" 2>/dev/null
     fi
 }
@@ -75,14 +69,19 @@ cleanup() {
     echo ""
     echo "=============== Cleanup ==============="
     if [ -n "$EVAL_PID" ]; then
+        echo "Cleaning up evaluation task (PID: $EVAL_PID) and all child processes..."
         kill_tree "$EVAL_PID"
     fi
     if [ -n "$SERVER_PID" ]; then
+        echo "Cleaning up server process (PID: $SERVER_PID)..."
         kill -9 ${SERVER_PID} 2>/dev/null
     fi
-    PIDS_ON_PORT=$(lsof -t -i:${SERVER_PORT} 2>/dev/null)
+    echo "Checking port ${SERVER_PORT} occupation..."
+    PIDS_ON_PORT=$(lsof -t -i:${SERVER_PORT})
     if [ -n "$PIDS_ON_PORT" ]; then
         echo "${PIDS_ON_PORT}" | xargs kill -9 2>/dev/null
+    else
+        echo "Port ${SERVER_PORT} released."
     fi
 }
 
@@ -91,21 +90,7 @@ trap cleanup EXIT INT TERM
 echo ""
 echo "=============== Step 1: Starting Server ==============="
 
-MPG_ARGS=""
-if [ ! -z "${USE_MPG}" ]; then MPG_ARGS="${MPG_ARGS} --use-mpg ${USE_MPG}"; fi
-if [ ! -z "${MPG_LAMBDA}" ]; then MPG_ARGS="${MPG_ARGS} --mpg-lambda ${MPG_LAMBDA}"; fi
-if [ ! -z "${MPG_NUM_PROJECTIONS}" ]; then MPG_ARGS="${MPG_ARGS} --mpg-num-projections ${MPG_NUM_PROJECTIONS}"; fi
-if [ ! -z "${MPG_REFINEMENT_ITERS}" ]; then MPG_ARGS="${MPG_ARGS} --mpg-refinement-iters ${MPG_REFINEMENT_ITERS}"; fi
-if [ ! -z "${MPG_GATE_TEMPERATURE}" ]; then MPG_ARGS="${MPG_ARGS} --mpg-gate-temperature ${MPG_GATE_TEMPERATURE}"; fi
-
-RTC_ARGS="--no-enable-rtc"
-
-METADATA_VARIANT_ARGS=""
-if [ ! -z "${METADATA_VARIANT}" ]; then
-    METADATA_VARIANT_ARGS="${METADATA_VARIANT_ARGS} --metadata-variant ${METADATA_VARIANT}"
-fi
-METADATA_VARIANT_ARGS="${METADATA_VARIANT_ARGS} --stats-selection-mode ${STATS_SELECTION_MODE}"
-
+echo "Starting inference server in background..."
 nohup python -u -m BeingH.inference.run_server_vla \
     --model-path "${MODEL_PATH}" \
     --port ${SERVER_PORT} \
@@ -116,9 +101,10 @@ nohup python -u -m BeingH.inference.run_server_vla \
     --prompt-template "${SERVER_PROMPT_TEMP}" \
     --max-view-num $SERVER_MAX_VIEW_NUM \
     --no-use-fixed-view \
-    ${MPG_ARGS} ${RTC_ARGS} ${METADATA_VARIANT_ARGS} > "${SERVER_LOG_FILE}" 2>&1 &
+    --no-enable-rtc > "${SERVER_LOG_FILE}" 2>&1 &
 
 SERVER_PID=$!
+echo "Inference server PID: ${SERVER_PID}"
 
 echo "Waiting for server to be ready..."
 MAX_RETRIES=300
@@ -127,7 +113,7 @@ SERVER_READY=false
 
 while [ $COUNTER -lt $MAX_RETRIES ]; do
     if ! kill -0 $SERVER_PID 2>/dev/null; then
-        echo "Error: Server process exited!"
+        echo "Error: Server process exited unexpectedly!"
         tail -n 10 "${SERVER_LOG_FILE}"
         exit 1
     fi
@@ -146,27 +132,71 @@ if [ "$SERVER_READY" = false ]; then
 fi
 
 echo ""
-echo "=============== Step 2: Running Evaluation ==============="
+echo "=============== Step 2: Starting Evaluation Loop ==============="
+
+CONDA_PATH=$(conda info --base)
+source "${CONDA_PATH}/etc/profile.d/conda.sh"
+conda activate ${EVAL_CONDA_ENV}
+echo "Conda environment activated: ${EVAL_CONDA_ENV}"
 
 for SUITE_NAME in "${EVAL_SUITES[@]}"; do
-    echo ">>> Evaluating: libero_${SUITE_NAME}"
+    
+    echo "-----------------------------------------------------------------------"
+    echo ">>> Starting evaluation for Suite: libero_${SUITE_NAME}"
+    echo "-----------------------------------------------------------------------"
     VIDEO_DIR="results/rollouts/${MODEL_NAME}/${SUITE_NAME}_"
-    EVAL_LOG_FILE="results/eval/logs/${MODEL_NAME}/libero_${SUITE_NAME}.log"
-    mkdir -p "$(dirname ${EVAL_LOG_FILE})"
+    CURRENT_EVAL_LOG_FILE="results/eval/logs/${MODEL_NAME}/libero_${SUITE_NAME}.log"
+    mkdir -p "$(dirname ${CURRENT_EVAL_LOG_FILE})"
+    rm -f "results/eval/logs/${MODEL_NAME}/.eval_pid_${SERVER_PORT}"
 
-    python -m BeingH.benchmark.libero.run_libero_eval_fast \
-        --task_suite_name "libero_${SUITE_NAME}" \
-        --port $SERVER_PORT \
-        --seed $EVAL_SEED \
-        --video_dir ${VIDEO_DIR} \
-        --num_open_loop_steps $EVAL_CHUNK_SIZE \
-        --num_trials_per_task $NUM_TRIALS \
-        --num_save_videos_per_task $NUM_SAVE_VIDEOS \
-        --log_interval $EVAL_LOG_INTERVAL \
-        --action_type $EVAL_ACTION_TYPE \
-        --data_config_name $EVAL_DATA_CONFIG_NAME 2>&1 | tee "${EVAL_LOG_FILE}"
+    (
+        echo "Starting evaluation script for libero_${SUITE_NAME}..."
+        python -m BeingH.benchmark.libero.run_libero_eval_fast \
+            --task_suite_name "libero_${SUITE_NAME}" \
+            --port $SERVER_PORT \
+            --seed $EVAL_SEED \
+            --video_dir ${VIDEO_DIR} \
+            --num_open_loop_steps $EVAL_CHUNK_SIZE \
+            --num_trials_per_task $NUM_TRIALS \
+            --num_save_videos_per_task $NUM_SAVE_VIDEOS \
+            --log_interval $EVAL_LOG_INTERVAL \
+            --action_type $EVAL_ACTION_TYPE \
+            --data_config_name $EVAL_DATA_CONFIG_NAME > "${CURRENT_EVAL_LOG_FILE}" 2>&1 &
 
-    echo ">>> Completed: libero_${SUITE_NAME}"
+        INNER_PID=$!
+        echo "Evaluation process PID (Suite: ${SUITE_NAME}): $INNER_PID"
+
+        # Write PID to temp file
+        echo $INNER_PID > "results/eval/logs/${MODEL_NAME}/.eval_pid_${SERVER_PORT}"
+
+        # Follow logs
+        tail -f "${CURRENT_EVAL_LOG_FILE}" --pid=$INNER_PID
+
+        wait $INNER_PID
+        EXIT_CODE=$?
+        
+        exit $EXIT_CODE
+
+    ) & 
+
+    SUBSHELL_PID=$!
+
+    # Wait for PID file update
+    sleep 2
+    if [ -f "results/eval/logs/${MODEL_NAME}/.eval_pid_${SERVER_PORT}" ]; then
+        EVAL_PID=$(cat "results/eval/logs/${MODEL_NAME}/.eval_pid_${SERVER_PORT}")
+        echo "Main script captured PID for libero_${SUITE_NAME}: $EVAL_PID"
+    fi
+
+    # Wait for current suite to finish
+    wait $SUBSHELL_PID
+    
+    echo ">>> Completed suite: libero_${SUITE_NAME}"
+    echo "    Log saved to: ${CURRENT_EVAL_LOG_FILE}"
+    echo ""
+
+    EVAL_PID=""
+
 done
 
 echo ""

@@ -6,6 +6,7 @@ __pycache__/
 work_dirs/
 results/
 swanlog/
+local_debug/
 
 # macOS
 .DS_Store

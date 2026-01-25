@@ -1,6 +1,6 @@
 # Training Guide
 
-Being-H uses FSDP distributed training via `torchrun`. See `scripts/train_libero_example.sh` for single-embodiment training and `scripts/train_cross_emb_example.sh` for cross-embodiment training.
+Being-H uses FSDP distributed training via `torchrun`. See `scripts/train/train_libero_example.sh` for single-embodiment training and `scripts/train/train_cross_emb_example.sh` for cross-embodiment training.
 
 ## Quick Start
 
@@ -8,10 +8,10 @@ Being-H uses FSDP distributed training via `torchrun`. See `scripts/train_libero
 export PYTHONPATH=.
 
 # Single-embodiment training
-bash scripts/train_libero_example.sh
+bash scripts/train/train_libero_example.sh
 
 # Cross-embodiment training
-bash scripts/train_cross_emb_example.sh
+bash scripts/train/train_cross_emb_example.sh
 ```
 
 ## Required Arguments

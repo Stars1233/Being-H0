@@ -134,6 +134,7 @@ class EmbodimentTag(Enum):
     """Enumeration of supported robot embodiments."""    
     LIBERO_FRANKA = "libero_franka_gripper"
     LIBERO = "libero"
+    ROBOCASA = "robocasa"
 
     NEW_EMBODIMENT = "new_embodiment"
 
@@ -142,6 +143,7 @@ class EmbodimentTag(Enum):
 EMBODIMENT_TAG_MAPPING = {
     EmbodimentTag.LIBERO_FRANKA.value: 0,
     EmbodimentTag.LIBERO.value: 0,  # Same as LIBERO_FRANKA
+    EmbodimentTag.ROBOCASA.value: 31,
     
     EmbodimentTag.NEW_EMBODIMENT.value: 31,
 

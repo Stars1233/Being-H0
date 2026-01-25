@@ -44,25 +44,6 @@ vim scripts/eval/eval-libero.sh
 bash scripts/eval/eval-libero.sh
 ```
 
-**Key configuration variables:**
-
-```bash
-MODEL_PATH="<path-to-checkpoint>"
-MODEL_NAME="<checkpoint-name>"
-EVAL_SUITES=("spatial" "object" "goal" "long")  # Task suites to evaluate
-NUM_TRIALS=50                                    # Episodes per task
-```
-
-### Cross-Embodiment Models
-
-For models trained on multiple embodiments, configure metadata selection:
-
-```bash
-DATASET_NAME="uni_posttrain"
-METADATA_VARIANT="libero_spatial"  # Task-specific variant
-STATS_SELECTION_MODE="task"
-```
-
 ---
 
 ## RoboCasa Benchmark
@@ -96,20 +77,3 @@ vim scripts/eval/eval-robocasa.sh
 # Run evaluation
 bash scripts/eval/eval-robocasa.sh
 ```
-
-**Key configuration variables:**
-
-```bash
-MODEL_PATH="<path-to-checkpoint>"
-MODEL_NAME="<checkpoint-name>"
-METADATA_VARIANT="<task-name>"    # e.g., "CloseDoubleDoor"
-NUM_TRIALS=50
-```
-
-### Task Categories
-
-| Category | Example Tasks |
-|----------|---------------|
-| Pick and Place | `PnPCounterToCab`, `PnPCabToCounter` |
-| Opening/Closing | `OpenDoor`, `CloseDoor`, `CloseDoubleDoor` |
-| Cooking | `TurnOnStove`, `TurnOffStove` |
