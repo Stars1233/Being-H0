@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RUN_NUM=7
+RUN_NUM=0
 export CUDA_VISIBLE_DEVICES=${RUN_NUM}
 export PYTHONPATH=.
 
