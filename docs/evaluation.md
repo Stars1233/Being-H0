@@ -12,6 +12,19 @@ LIBERO is a benchmark for lifelong robot learning with 130 tasks across 4 task s
 - **LIBERO-Goal**: Goal-conditioned tasks (10 tasks)
 - **LIBERO-Long**: Long-horizon tasks (10 tasks)
 
+### (Optional) Prepare Training Data
+
+*If you only need to run evaluation, you can skip this section.*
+
+For training, the following datasets from the IPEC-COMMUNITY (LeRobot format) are required:
+
+- **Spatial:** [libero_spatial_no_noops_1.0.0_lerobot](https://huggingface.co/datasets/IPEC-COMMUNITY/libero_spatial_no_noops_1.0.0_lerobot)
+- **Libero-10:** [libero_10_no_noops_1.0.0_lerobot](https://huggingface.co/datasets/IPEC-COMMUNITY/libero_10_no_noops_1.0.0_lerobot)
+- **Object:** [libero_object_no_noops_1.0.0_lerobot](https://huggingface.co/datasets/IPEC-COMMUNITY/libero_object_no_noops_1.0.0_lerobot)
+- **Goal:** [libero_goal_no_noops_1.0.0_lerobot](https://huggingface.co/datasets/IPEC-COMMUNITY/libero_goal_no_noops_1.0.0_lerobot)
+
+Then follow our [training guide](training.md) to train Being-H0.5 on this dataset.
+
 ### Install LIBERO Repository
 
 Please follow the original [LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO) installation instructions:
@@ -24,6 +37,7 @@ cd LIBERO
 pip install -r requirements.txt
 pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
 pip install -e .
+pip install draccus
 # Download standard LIBERO datasets
 python benchmark_scripts/download_libero_datasets.py
 ```
@@ -59,6 +73,17 @@ RoboCasa is a large-scale simulation benchmark for everyday household tasks:
 - 100+ kitchen tasks
 - Multiple robot configurations
 - Realistic kitchen environments
+
+### (Optional) Prepare Training Data
+
+*If you only need to run evaluation, you can skip this section.*
+
+We utilize the **Human Demonstrations (single stage)** from the official [RoboCasa](https://robocasa.ai/). These have been converted into the **LeRobot** format for compatibility with this project.
+
+- Download dataset: [BeingBeyond/robocasa_human_single_lerobot](https://huggingface.co/datasets/BeingBeyond/robocasa_human_single_lerobot)
+
+Then follow our [training guide](training.md) to train Being-H0.5 on this dataset.
+
 
 ### Install RoboCasa Repository
 

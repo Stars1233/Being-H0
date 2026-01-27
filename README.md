@@ -25,7 +25,7 @@ Being-H0.5 is a foundational VLA model that scales human-centric learning with u
 ## News
 
 
-- **[2026-01-24]**: We’ve updated the training, inference, and data configurations along with complete post-training scripts for Being-H0.5. Additionally, post-training data for the PND Adam-U robot is now open-sourced. Download it via our [Hugging Face Dataset Collections](https://huggingface.co/collections/BeingBeyond/pnd-adam-u-data).
+- **[2026-01-24]**: We’ve updated the documents for training, inference, and data preparation along with example post-training scripts for Being-H0.5. Additionally, post-training data for the PND Adam-U robot is now open-sourced. Download it via our [Hugging Face Dataset Collections](https://huggingface.co/collections/BeingBeyond/pnd-adam-u-data).
 - **[2026-01-20]**: We publish the **Being-H0.5**! Check our [Paper](https://arxiv.org/pdf/2601.12993) for technical details and [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h05) for pretrained and post-trained models. 🔥🔥🔥
 - **[2025-08-02]**: We release the **Being-H0** codebase and pretrained models! Check our [Hugging Face Model Collections](https://huggingface.co/collections/BeingBeyond/being-h0) for more details. 🔥🔥🔥
 - **[2025-07-21]**: We publish **Being-H0**! Check our paper [here](https://arxiv.org/pdf/2507.15597). 🌟🌟🌟
