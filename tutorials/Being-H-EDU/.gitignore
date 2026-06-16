@@ -23,7 +23,7 @@ swanlog/
 *.backup
 
 lerobot/datasets/
-datasets/
+/datasets/
 *.parquet
 *.mp4
 *.safetensors
