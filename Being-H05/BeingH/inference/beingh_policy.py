@@ -597,6 +597,22 @@ class BeingHPolicy(BasePolicy):
             if isinstance(value, torch.Tensor):
                 packed_inputs[key] = value.to(self.device, non_blocking=True)
 
+        if getattr(self.model, "mask_invalid_action_dims", False):
+            action_valid_mask = torch.zeros(
+                1,
+                self.action_chunk_length,
+                self.model.unified_action_dim,
+                dtype=torch.float32,
+                device=self.device,
+            )
+            for key, (start, end) in self.unified_mapping.items():
+                if key.startswith('action.'):
+                    action_valid_mask[:, :, start:end] = 1.0
+            packed_inputs['action_valid_mask'] = action_valid_mask
+
+            if self.enable_rtc and prev_chunk is not None:
+                prev_chunk = prev_chunk * action_valid_mask
+
         # ===== 4. Add RTC Parameters to Model Input =====
         if self.enable_rtc and prev_chunk is not None and inference_delay > 0:
             packed_inputs['prev_chunk'] = prev_chunk

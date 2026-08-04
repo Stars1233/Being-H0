@@ -900,8 +900,9 @@ def main():
         use_expert=model_args.use_expert,
         use_flow_matching=model_args.use_flow_matching,
         attn_mode=model_args.attn_mode,
-        # New checkpoints use masked Flow Matching inputs by default. Older
-        # checkpoints that do not have this field load with False in BeingHConfig.
+        # New checkpoints record controlled invalid-dim Flow Matching explicitly.
+        # Older checkpoints without this field also default to the fixed inference
+        # path in BeingHConfig; set the field to False only to reproduce legacy behavior.
         mask_invalid_action_dims=True,
         # MPG parameters
         use_mpg=model_args.use_mpg,
