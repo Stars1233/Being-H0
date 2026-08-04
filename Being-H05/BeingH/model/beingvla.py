@@ -125,6 +125,7 @@ class BeingHConfig(PretrainedConfig):
         self.num_timestep_buckets = 1000
         self.noise_s = 0.999
         self.num_inference_timesteps = num_inference_timesteps
+        self.mask_invalid_action_dims = kwargs.get('mask_invalid_action_dims', True)
 
         # =====================================================
         # MPG Enhancement Parameters
@@ -173,6 +174,7 @@ class BeingH(PreTrainedModel):
         self.connector = connector
         self.use_expert = config.use_expert
         self.use_flow_matching = config.use_flow_matching
+        self.mask_invalid_action_dims = getattr(config, 'mask_invalid_action_dims', False)
 
         self.hidden_size = config.llm_config.hidden_size
         self.action_hidden_size = config.llm_config.expert_config.hidden_size if \
@@ -358,7 +360,7 @@ class BeingH(PreTrainedModel):
             B = padded_action.shape[0] // self.action_chunk_length
 
             if self.use_flow_matching:
-                padded_action_target = padded_action  # x1
+                padded_action_target = padded_action  # x1; invalid dims are zero-filled by the dataset.
                 noise = torch.randn(padded_action_target.shape, device=device, dtype=padded_action_target.dtype)  # x0
 
                 # =====================================================================
@@ -577,6 +579,11 @@ class BeingH(PreTrainedModel):
                     predicted_velocity = self.action_decoder(
                         last_hidden_state_act.reshape(B, self.action_chunk_length, -1)
                     )
+                    if self.mask_invalid_action_dims and padded_action_mask is not None:
+                        predicted_velocity = predicted_velocity * padded_action_mask.view(
+                            B, self.action_chunk_length, -1
+                        ).to(dtype=predicted_velocity.dtype)
+
                     masked_mse_loss = F.mse_loss(
                         predicted_velocity.view(B * self.action_chunk_length, -1),
                         velocity_target,
@@ -627,6 +634,7 @@ class BeingH(PreTrainedModel):
         # RTC inference parameters
         prev_chunk: Optional[torch.Tensor] = None,  # Previous action chunk for prefix conditioning
         inference_delay: int = 0,  # Number of prefix actions for RTC
+        action_valid_mask: Optional[torch.Tensor] = None,
         **kwargs
     ):
         self.eval()
@@ -685,7 +693,43 @@ class BeingH(PreTrainedModel):
             num_steps = self.num_inference_timesteps
             dt = 1.0 / num_steps
             action_shape = (B, self.action_chunk_length, self.unified_action_dim)
+            if self.mask_invalid_action_dims:
+                if action_valid_mask is None:
+                    action_valid_mask = torch.ones(action_shape, device=device, dtype=packed_text_embedding.dtype)
+                else:
+                    action_valid_mask = action_valid_mask.to(device=device, dtype=packed_text_embedding.dtype)
+                    if action_valid_mask.dim() == 2:
+                        action_valid_mask = action_valid_mask.unsqueeze(0)
+                    if action_valid_mask.shape[0] == 1 and B > 1:
+                        action_valid_mask = action_valid_mask.expand(B, -1, -1)
+                    if action_valid_mask.shape != action_shape:
+                        raise ValueError(
+                            f"action_valid_mask shape mismatch: got {tuple(action_valid_mask.shape)}, "
+                            f"expected {action_shape}"
+                        )
             actions = torch.randn(action_shape, device=device, dtype=packed_text_embedding.dtype)
+            invalid_action_noise = None
+            action_invalid_mask = None
+
+            def project_invalid_action_dims(actions_tensor, timesteps):
+                if not self.mask_invalid_action_dims:
+                    return actions_tensor
+                t_tensor = torch.as_tensor(timesteps, device=device, dtype=actions_tensor.dtype)
+                if t_tensor.dim() == 0:
+                    t_tensor = t_tensor.view(1, 1, 1)
+                elif t_tensor.dim() == 1:
+                    t_tensor = t_tensor.view(-1, 1, 1)
+                elif t_tensor.dim() == 2:
+                    t_tensor = t_tensor.unsqueeze(-1)
+                else:
+                    raise ValueError(f"Unsupported timestep shape for invalid action projection: {tuple(t_tensor.shape)}")
+                invalid_values = (1.0 - t_tensor) * invalid_action_noise
+                return actions_tensor * action_valid_mask + invalid_values * action_invalid_mask
+
+            if self.mask_invalid_action_dims:
+                action_invalid_mask = 1.0 - action_valid_mask
+                invalid_action_noise = actions.detach().clone()
+                actions = project_invalid_action_dims(actions, 0.0)
 
             # =====================================================================
             # RTC Prefix Locking Setup
@@ -712,6 +756,8 @@ class BeingH(PreTrainedModel):
                     prev_chunk_padded = F.pad(prev_chunk, (0, 0, 0, pad_width), mode='replicate')
                 else:
                     prev_chunk_padded = prev_chunk[:, :self.action_chunk_length]
+                if self.mask_invalid_action_dims:
+                    prev_chunk_padded = prev_chunk_padded * action_valid_mask
 
                 # Initialize actions: prefix from prev_chunk, suffix from noise
                 actions = torch.where(
@@ -719,6 +765,8 @@ class BeingH(PreTrainedModel):
                     prev_chunk_padded,            # (B, Chunk, A_Dim)
                     actions                       # (B, Chunk, A_Dim) - random noise
                 )
+                if self.mask_invalid_action_dims:
+                    actions = project_invalid_action_dims(actions, 0.0)
 
             base_packed_sequence = packed_sequence.clone()
             if self.use_expert:
@@ -746,6 +794,9 @@ class BeingH(PreTrainedModel):
             for iteration in range(total_iterations):
                 # Reset actions for each iteration (start from noise)
                 actions = torch.randn(action_shape, device=device, dtype=packed_text_embedding.dtype)
+                if self.mask_invalid_action_dims:
+                    invalid_action_noise = actions.detach().clone()
+                    actions = project_invalid_action_dims(actions, 0.0)
 
                 # RTC: Re-apply prefix from prev_chunk for each iteration
                 if use_rtc:
@@ -754,11 +805,15 @@ class BeingH(PreTrainedModel):
                         prev_chunk_padded,
                         actions
                     )
+                    if self.mask_invalid_action_dims:
+                        actions = project_invalid_action_dims(actions, 0.0)
 
                 for t_step in range(num_steps):
                     t_continuous = t_step / float(num_steps)  # Time from 0 -> 1
                     t_discretized = int(t_continuous * self.num_timestep_buckets)
 
+                    if self.mask_invalid_action_dims:
+                        actions = project_invalid_action_dims(actions, t_continuous)
                     if use_rtc:
                         # RTC: overwrite prefix and use per-token timesteps (prefix=1.0)
                         actions = torch.where(
@@ -773,6 +828,8 @@ class BeingH(PreTrainedModel):
                             dtype=actions.dtype
                         )
                         timesteps_full = torch.where(prefix_mask, 1.0, timesteps_full)
+                        if self.mask_invalid_action_dims:
+                            actions = project_invalid_action_dims(actions, timesteps_full)
                         actions_flat = actions.reshape(B * self.action_chunk_length, -1)
                         timesteps_flat = (timesteps_full.reshape(-1) * self.num_timestep_buckets).long()
                         action_features = self.action_encoder(actions_flat, timesteps_flat)
@@ -867,6 +924,8 @@ class BeingH(PreTrainedModel):
                     pred_velocity = self.action_decoder(
                         last_hidden_state_act.reshape(B, self.action_chunk_length, -1)
                     )
+                    if self.mask_invalid_action_dims:
+                        pred_velocity = pred_velocity * action_valid_mask
 
                     actions = actions + dt * pred_velocity
 
@@ -880,6 +939,19 @@ class BeingH(PreTrainedModel):
                             prev_chunk_padded,
                             actions
                         )
+                    if self.mask_invalid_action_dims:
+                        t_next = min(t_continuous + dt, 1.0)
+                        if use_rtc:
+                            timesteps_next_full = torch.full(
+                                (B, self.action_chunk_length),
+                                t_next,
+                                device=device,
+                                dtype=actions.dtype
+                            )
+                            timesteps_next_full = torch.where(prefix_mask, 1.0, timesteps_next_full)
+                            actions = project_invalid_action_dims(actions, timesteps_next_full)
+                        else:
+                            actions = project_invalid_action_dims(actions, t_next)
 
                 # After each iteration, encode predicted actions as CLEAN embeddings for next iteration
                 if use_mpg_inference and iteration < total_iterations - 1:
