@@ -708,18 +708,19 @@ class BeingHPolicy(BasePolicy):
         packed_text_indexes.extend(range(curr, curr + len(block_ids)))
         curr += len(block_ids)
         
-        # Vision
-        num_total_images = len(all_frames)
-        packed_text_ids.extend([self.start_of_image])
-        packed_text_indexes.append(curr)
-        curr += 1
+        # Vision. Match the training data layout: each image is wrapped by its
+        # own vision start/end tokens instead of sharing one span across views.
+        for _ in all_frames:
+            packed_text_ids.append(self.start_of_image)
+            packed_text_indexes.append(curr)
+            curr += 1
 
-        packed_vit_token_indexes.extend(range(curr, curr + self.num_image_token * num_total_images))
-        curr += self.num_image_token * num_total_images
+            packed_vit_token_indexes.extend(range(curr, curr + self.num_image_token))
+            curr += self.num_image_token
 
-        packed_text_ids.extend([self.end_of_image])
-        packed_text_indexes.append(curr)
-        curr += 1
+            packed_text_ids.append(self.end_of_image)
+            packed_text_indexes.append(curr)
+            curr += 1
         
         # State
         packed_text_ids.extend([self.start_of_state])
