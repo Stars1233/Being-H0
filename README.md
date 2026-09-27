@@ -13,6 +13,8 @@ Within this repository, **Being-H0.7** is our flagship **WAM** model and **Being
 
 ## News
 
+- **[2026-09-24]**: **Being-H0.7** is accepted by NeurIPS 2026! 🔥🔥
+- **[2026-09-05]**: **Being-H0.5** is accepted by CoRL 2026! 🔥🔥
 - **[2026-06-09]**: We add [Being-H-EDU](tutorials/Being-H-EDU/), an educational tutorial workspace for post-training and deployment examples.
 - **[2026-05-01]**: **Being-H0** is accepted by ICML 2026! Welcome to connect with the BeingBeyond Team at the venue then! 🔥🔥 
 - **[2026-04-14]**: We publish **Being-H0.7**, our flagship WAM model. See the [blog](https://research.beingbeyond.com/being-h07) and [paper](https://research.beingbeyond.com/projects/being-h07/being-h07.pdf). Code and checkpoints are coming soon!
@@ -27,6 +29,7 @@ Within this repository, **Being-H0.7** is our flagship **WAM** model and **Being
 
 We are seeing a growing set of excellent projects built on top of the Being-H family:
 
+- TTP: Human-Centric Transferable Tactile Pre-Training for Dexterous Robotic Manipulation [arXiv 26'04](https://arxiv.org/abs/2607.01067) | [website](https://research.beingbeyond.com/ttp) | [GitHub](https://github.com/BeingBeyond/TTP)
 - Unmasking the Illusion of Embodied Reasoning in Vision-Language-Action Models. [arXiv 26'04](https://arxiv.org/abs/2604.18000) | [website](https://research.beingbeyond.com/better) | [GitHub](https://github.com/BeingBeyond/BeTTER)
 - Conservative Offline Robot Policy Learning via Posterior-Transition Reweighting. [arXiv 26'03](https://arxiv.org/abs/2603.16542) | [website](https://research.beingbeyond.com/ptr) | [GitHub](https://github.com/BeingBeyond/PTR)
 - DexHiL: A Human-in-the-Loop Framework for Vision-Language-Action Model Post-Training in Dexterous Manipulation. [arXiv 26'03](https://arxiv.org/abs/2603.09121) | [website](https://chenzhongxi-sjtu.github.io/dexhil/)
